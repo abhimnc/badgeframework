@@ -101,7 +101,7 @@ class BLEBadgeConnection(BadgeConnection):
 	# be called on a different thread so be careful to make sure state that
 	# the function changes is thread safe.  Use Queue or other thread-safe
 	# primitives to send data to other threads.
-	def received(self, data):
+	def received(self,data):
 		logger.debug("Recieved {}".format(data.encode("hex")))
 		self.rx_buffer += data
 		if len(self.rx_buffer) >= self.rx_bytes_expected:
@@ -119,7 +119,6 @@ class BLEBadgeConnection(BadgeConnection):
 		#print(self.ble_device)
 		conn = btle.Peripheral(self.ble_device, btle.ADDR_TYPE_RANDOM)
 		
-
 		logger.debug("Attempting to discover characteristics...")
 
 		#self.ble_device.discover([UART_SERVICE_UUID], [TX_CHAR_UUID, RX_CHAR_UUID])
@@ -198,7 +197,8 @@ class BLEBadgeConnection(BadgeConnection):
 		self.conn.waitForNotifications(5.0)
 		if response_len > 0:
 			with self.rx_condition:
-				self.rx_condition.wait()
+				self.rx_condition.wait(5.0)
+	
 			return self.rx_message
 
 	# Internal method called when a full message has been recieved from the badge. 

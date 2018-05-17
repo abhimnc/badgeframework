@@ -2,9 +2,9 @@ import logging
 import sys
 import threading
 
-from ble_badge_connection import *
-from badge import *
 
+from badge import *
+from ble_badge_connection import *
 from bluepy import *
 from bluepy import btle
 from bluepy.btle import UUID, Peripheral, DefaultDelegate, AssignedNumbers ,Scanner
