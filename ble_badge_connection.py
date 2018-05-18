@@ -179,10 +179,10 @@ class BLEBadgeConnection(BadgeConnection):
 			raise RuntimeError("BLEBadgeConnection not connected before await_data()!")
 
 		self.rx_bytes_expected = data_len
-		self.conn.waitForNotifications(5.0)
 		if data_len > 0:
-			with self.rx_condition:
-				self.rx_condition.wait()
+			self.conn.waitForNotifications(5.0)
+			#with self.rx_condition:
+			#	self.rx_condition.wait()
 			return self.rx_message
 
 	# Implements BadgeConnection's send() spec.
@@ -194,10 +194,11 @@ class BLEBadgeConnection(BadgeConnection):
 		print(self.ble_device)
 		self.rx_bytes_expected = response_len
 		self.tx.write(message,withResponse=True)
-		self.conn.waitForNotifications(5.0)
+		
 		if response_len > 0:
-			with self.rx_condition:
-				self.rx_condition.wait(5.0)
+			self.conn.waitForNotifications(5.0)
+			#with self.rx_condition:
+			#	self.rx_condition.wait(5.0)
 	
 			return self.rx_message
 
@@ -205,5 +206,6 @@ class BLEBadgeConnection(BadgeConnection):
 	# Notifies anyone waiting on data from the badge that the recieved message is ready.
 	def on_message_rx(self, message):
 		self.rx_message = message
+
 		with self.rx_condition:
 			self.rx_condition.notifyAll()
