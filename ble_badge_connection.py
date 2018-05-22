@@ -4,7 +4,6 @@
 # The Adafruit Library is licensed under the MIT license.
 
 from badge_connection import *
-from badge_discoverer import BadgeDiscoverer
 
 import logging
 import time
@@ -144,8 +143,8 @@ class BLEBadgeConnection(BadgeConnection):
 		# Adafruit's PyOBJ bindings have a race condition in them, where they set the notification state 
 		# but don't wait for the notification state to actually change before writing things.
 		# A sleep here will suffice, but if I'm super nice I oughta submit a PR to them to fix that for them.
-		import time
-		time.sleep(1)
+		#import time
+		#time.sleep(1)
 		self.conn = conn
 
 
@@ -181,8 +180,12 @@ class BLEBadgeConnection(BadgeConnection):
 		self.rx_bytes_expected = data_len
 		if data_len > 0:
 			self.conn.waitForNotifications(5.0)
+			#self.rx_condition.acquire()
 			#with self.rx_condition:
-			#	self.rx_condition.wait()
+				#self.rx_condition.wait()
+
+
+			#self.rx_condition.notify()
 			return self.rx_message
 
 	# Implements BadgeConnection's send() spec.
@@ -206,6 +209,8 @@ class BLEBadgeConnection(BadgeConnection):
 	# Notifies anyone waiting on data from the badge that the recieved message is ready.
 	def on_message_rx(self, message):
 		self.rx_message = message
+		self.conn.waitForNotifications(5.0)
 
 		with self.rx_condition:
+			time.sleep(1)
 			self.rx_condition.notifyAll()
