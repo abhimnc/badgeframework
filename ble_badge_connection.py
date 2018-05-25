@@ -120,11 +120,11 @@ class BLEBadgeConnection(BadgeConnection):
 
 	def received(self,data):
 		logger.debug("Recieved {}".format(data.encode("hex")))
-		self.rx_buffer += data
-		if len(self.rx_buffer) >= self.rx_bytes_expected:
-			self.on_message_rx(self.rx_buffer[0:self.rx_bytes_expected])
-			self.rx_buffer = self.rx_buffer[self.rx_bytes_expected:]
-			self.rx_bytes_expected = 0
+		self.rx_message = data
+		#if len(self.rx_buffer) >= self.rx_bytes_expected:
+			#self.on_message_rx(self.rx_buffer[0:self.rx_bytes_expected])
+			#self.rx_buffer = self.rx_buffer[self.rx_bytes_expected:]
+			#self.rx_bytes_expected = 0
 
 
 	# Implements BadgeConnection's connect() spec.	
@@ -223,17 +223,14 @@ class BLEBadgeConnection(BadgeConnection):
 
 	# Internal method called when a full message has been recieved from the badge. 
 	# Notifies anyone waiting on data from the badge that the recieved message is ready.
-	def on_message_rx(self, message):
-		self.rx_message = message
+	#def on_message_rx(self, message):
+	#	self.rx_message = message
+	#	self.received(self.rx_message)
 
 
 		#if message > 0:
 		#	self.conn.waitForNotifications(5.0)
-
-		
-
-
-		with self.rx_condition:
-			#self.rx.waitForNotifications(5.0)
-			time.sleep(1)
-			self.rx_condition.notifyAll()
+		#with self.rx_condition:
+		#	#self.rx.waitForNotifications(5.0)
+		#	time.sleep(1)
+		#	self.rx_condition.notifyAll()
